@@ -1,5 +1,7 @@
+'use strict'
+
 const express = require('express');
-// const bodyParser = require('body-parser');
+const path = require('path');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -7,7 +9,7 @@ const mainRoutes = require('./routes/mainRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
+app.use(express.static('public'));
 
 app.use((req, res, next) => {
   console.log(`req: ${req.url}`);
@@ -22,6 +24,10 @@ app.get('/',(req, res, next)=>{
 });
 
 app.use((req, res, next)=>{
-  res.status(404).send('<h2>404: you lose.');
+  // var root = path.dirname(process.mainModule.filename);
+  var root = path.dirname(require.main.filename);
+  console.log('root=>'+ root);
+  res.status(404).sendFile(path.join(__dirname, 'views','404.html'));
 });
+
 app.listen(PORT);
